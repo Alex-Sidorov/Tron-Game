@@ -122,9 +122,11 @@ Window {
         id: messageArea
         anchors.fill: parent
         anchors.topMargin: 60
-        //color: "black"
-        //opacity: 0.4
+        color: "black"
+        opacity: 0.4
         visible: !timer.running
+
+        z:1
 
         Text {
             id: messageText
