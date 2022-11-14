@@ -119,6 +119,12 @@ Window {
     }
 
     Rectangle {
+        width: parent.width
+        height: 60
+        color: "grey"
+    }
+
+    Rectangle {
         id: messageArea
         anchors.fill: parent
         anchors.topMargin: 60
@@ -208,8 +214,10 @@ Window {
 
         font.pixelSize: 25
 
+        color: "white"
+
         anchors.top: parent.top
-        anchors.topMargin: 5
+        anchors.topMargin: 15
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
