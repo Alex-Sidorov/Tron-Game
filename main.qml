@@ -2,8 +2,11 @@ import QtQuick.Window 2.15
 import QtQuick 2.0
 import QtCharts 2.0
 import QtQml 2.12
+import QtQuick.Controls 2.15
 
 Window {
+    id: app
+
     width: 640
     height: 640
     visible: true
@@ -13,6 +16,8 @@ Window {
 
     property int firstWay: 1
     property int secondWay: 3
+
+    property int mode: -1
 
     property int maxX: 100
     property int maxY: 100
@@ -25,6 +30,10 @@ Window {
 
     property int firstWonCount: 0
     property int secondWonCount: 0
+
+    Component.onCompleted: {
+        modePopup.open()
+    }
 
     /*onFirstWayChanged: {
         console.log("first: " + firstWay)
@@ -42,6 +51,12 @@ Window {
         secondWay = 3
 
         hash.clear()
+    }
+
+    function resetGame() {
+        resetRound()
+
+        firstWonCount = secondWonCount = 0
     }
 
     function updatePoints(series, way) {
@@ -118,10 +133,67 @@ Window {
         return true
     }
 
+    ModePopup {
+        id: modePopup
+
+        onSelectMode: {
+            app.mode = mode
+            resetGame()
+        }
+
+        onClosed: {
+            keyItem.focus = true
+        }
+
+        anchors.centerIn: parent
+    }
+
     Rectangle {
+        id: header
         width: parent.width
         height: 60
         color: "grey"
+
+        Button {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 15
+
+            onClicked: {
+                modePopup.open()
+            }
+
+            enabled: !timer.running
+
+            background: Rectangle {
+                radius: 10
+                color: "#61203d"
+                opacity: parent.down || !parent.enabled ? 0.5 : 1
+
+                Text {
+                    text: qsTr("Mode")
+
+                    anchors.centerIn: parent
+
+                    font.pixelSize: 20
+                    color: "white"
+                }
+
+                implicitWidth: 100
+                implicitHeight: 40
+            }
+        }
+
+        Text {
+            id: score
+            text: qsTr("Score " + firstWonCount + " : " + secondWonCount)
+
+            font.pixelSize: 25
+
+            color: "white"
+
+            anchors.centerIn: parent
+        }
     }
 
     Rectangle {
@@ -136,7 +208,7 @@ Window {
 
         Text {
             id: messageText
-            text: qsTr("Tab Enter for start")
+            text: mode != -1 ? qsTr("Tab Enter for start") : qsTr("Select mode")
             color: "white"
             font.pixelSize: 25
             anchors.centerIn: parent
@@ -144,8 +216,11 @@ Window {
     }
 
     Item {
+        id:keyItem
 
         focus: true
+
+        enabled: mode !== -1
 
         Keys.onPressed: {
 
@@ -155,6 +230,10 @@ Window {
             if(!timer.running)
                 return
 
+
+            /*if(event.key === Qt.Key_Escape)
+                timer.running = !timer.running*/
+
             if(event.key === Qt.Key_W && firstWay !== 2)
                 firstWay = 0
             else if (event.key === Qt.Key_D && firstWay !== 3)
@@ -163,7 +242,11 @@ Window {
                 firstWay = 2
             else if (event.key === Qt.Key_A && firstWay !== 1)
                 firstWay = 3
-            else if (event.key === Qt.Key_Up && secondWay !== 2)
+
+            if(mode !== 0)
+                return
+
+            if (event.key === Qt.Key_Up && secondWay !== 2)
                 secondWay = 0
             else if (event.key === Qt.Key_Right && secondWay !== 3)
                 secondWay = 1
@@ -171,8 +254,6 @@ Window {
                 secondWay = 2
             else if (event.key === Qt.Key_Left && secondWay !== 1)
                 secondWay = 3
-            /*else if(event.key === Qt.Key_Escape)
-                timer.running = !timer.running*/
         }
     }
 
@@ -206,19 +287,6 @@ Window {
             } else if(!second.count)
                 second.append(maxX, maxY / 2)
         }
-    }
-
-    Text {
-        id: score
-        text: qsTr("Score " + firstWonCount + " : " + secondWonCount)
-
-        font.pixelSize: 25
-
-        color: "white"
-
-        anchors.top: parent.top
-        anchors.topMargin: 15
-        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     ChartView {
