@@ -148,52 +148,8 @@ Window {
         anchors.centerIn: parent
     }
 
-    Rectangle {
-        id: header
-        width: parent.width
-        height: 60
-        color: "grey"
-
-        Button {
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 15
-
-            onClicked: {
-                modePopup.open()
-            }
-
-            enabled: !timer.running
-
-            background: Rectangle {
-                radius: 10
-                color: "#61203d"
-                opacity: parent.down || !parent.enabled ? 0.5 : 1
-
-                Text {
-                    text: qsTr("Mode")
-
-                    anchors.centerIn: parent
-
-                    font.pixelSize: 20
-                    color: "white"
-                }
-
-                implicitWidth: 100
-                implicitHeight: 40
-            }
-        }
-
-        Text {
-            id: score
-            text: qsTr("Score " + firstWonCount + " : " + secondWonCount)
-
-            font.pixelSize: 25
-
-            color: "white"
-
-            anchors.centerIn: parent
-        }
+    Header {
+       id: header
     }
 
     Rectangle {
@@ -230,7 +186,6 @@ Window {
             if(!timer.running)
                 return
 
-
             /*if(event.key === Qt.Key_Escape)
                 timer.running = !timer.running*/
 
@@ -257,6 +212,82 @@ Window {
         }
     }
 
+    function calculateBotStep() { //TODO
+
+        if(!second.count)
+            return
+
+        if(Math.random() > 0.8)
+            return
+
+        var lastPoint = second.at(second.count - 1)
+
+        var maxFreeStep = 0;
+        var temp = 0
+        var curWay = secondWay
+
+        for(var i = lastPoint.x; curWay !== 3 && i < lastPoint.x + maxX/2; i += step) {
+
+            if(hash.has(Qt.point(lastPoint.x + i, lastPoint.y)))
+                break
+            else
+                ++temp
+        }
+
+        maxFreeStep = Math.max(temp,maxFreeStep)
+        if(maxFreeStep > 35 && maxFreeStep === temp)
+            secondWay = 1
+
+        if(secondWay !== curWay && Math.random() > 0.7)
+            return
+
+        temp = 0;
+        for(i = lastPoint.x; curWay !== 1 && i > lastPoint.x - maxX/2; i -= step) {
+
+            if(hash.has(Qt.point(lastPoint.x - i, lastPoint.y)))
+                break
+            else
+                ++temp
+
+        }
+
+        maxFreeStep = Math.max(temp,maxFreeStep)
+        if(maxFreeStep > 35 && maxFreeStep === temp)
+            secondWay = 3
+
+        if(secondWay !== curWay && Math.random() > 0.5)
+            return
+
+        temp = 0;
+        for(i = lastPoint.y; curWay !== 0 && i < lastPoint.y + maxY/2; i += step) {
+
+            if(hash.has(Qt.point(lastPoint.x, lastPoint.y + i)))
+                break
+            else
+                ++temp
+        }
+
+        maxFreeStep = Math.max(temp,maxFreeStep)
+        if(maxFreeStep > 35 && maxFreeStep === temp)
+            secondWay = 0
+
+        if(secondWay !== curWay && Math.random() > 0.3)
+            return
+
+        temp = 0;
+        for(i = lastPoint.y; curWay !== 2 && i > lastPoint.y - maxY/2; i -= step) {
+
+            if(hash.has(Qt.point(lastPoint.x, lastPoint.y - 1)))
+                break
+            else
+                ++temp
+        }
+
+        maxFreeStep = Math.max(temp,maxFreeStep)
+        if(maxFreeStep > 35 && maxFreeStep === temp)
+            secondWay = 2
+    }
+
     Timer {
         id: timer
 
@@ -276,6 +307,10 @@ Window {
 
             } else if(!first.count)
                 first.append(0, maxY / 2)
+
+            if(mode === 1)
+                calculateBotStep()
+
 
             if(second.count && !updatePoints(second, secondWay)) {
 
@@ -352,5 +387,14 @@ Window {
                 console.log("second point:" + second.at(second.count - 1))
             }*/
         }
+
+        /*LineSeries { //for online
+            id: third
+            axisY: axisY
+            axisX: axisX
+            useOpenGL: chartView.openGL
+            color: "green"
+            width: widthLine
+        }*/
     }
 }

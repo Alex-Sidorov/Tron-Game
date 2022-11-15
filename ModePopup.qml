@@ -73,6 +73,8 @@ Popup {
             Button {
                 Layout.fillWidth: true
 
+                enabled: false
+
                 onClicked: {
                     selectMode(1)
                     close()
