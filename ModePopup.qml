@@ -2,6 +2,8 @@ import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
+import Mode 1.0
+
 Popup {
     id: root
 
@@ -47,7 +49,7 @@ Popup {
                 Layout.fillWidth: true
 
                 onClicked: {
-                    selectMode(0)
+                    selectMode(Mode.Friend)
                     close()
                 }
 
@@ -76,7 +78,7 @@ Popup {
                 enabled: false
 
                 onClicked: {
-                    selectMode(1)
+                    selectMode(Mode.Bot)
                     close()
                 }
 
@@ -103,7 +105,7 @@ Popup {
                 Layout.fillWidth: true
 
                 onClicked: {
-                    selectMode(1)
+                    selectMode(Mode.Online)
                     close()
                 }
 

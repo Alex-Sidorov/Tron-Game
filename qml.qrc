@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>ModePopup.qml</file>
         <file>Header.qml</file>
+        <file>Arena.qml</file>
     </qresource>
 </RCC>

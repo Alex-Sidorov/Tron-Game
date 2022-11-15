@@ -1,5 +1,7 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include "gamemanager.h"
 
 
 int main(int argc, char *argv[])
@@ -9,7 +11,15 @@ int main(int argc, char *argv[])
 #endif
     QApplication app(argc, argv);
 
+    qmlRegisterType<ModeClass>("Mode", 1, 0, "Mode");
+    qmlRegisterType<WayClass>("Way", 1, 0, "Way");
+
+    GameManager manager;
+
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty(QLatin1String("gameManager"), &manager);
+
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
         &app, [url](QObject *obj, const QUrl &objUrl) {
