@@ -42,9 +42,15 @@ void GameManager::setSecondPlayerWay(int way)
     emit changeWays();
 }
 
+void GameManager::clearArea()
+{
+    memset(m_usedAreas, false, MAX_X * MAX_Y);
+}
+
 void GameManager::resetRound()
 {
-    m_usedAreas.clear();
+    //m_usedAreas.clear();
+    clearArea();
 
     m_firstPlayerWay = WayClass::Right;
     m_secondPlayerWay = WayClass::Left;
@@ -91,7 +97,6 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
 
     if(x > MAX_X)
     {
-
         xySeries->append(x + 10, y);
         xySeries->append(x, MAX_Y + 10);
         xySeries->append(-10, MAX_Y + 10);
@@ -107,7 +112,7 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
         xySeries->append(MAX_X + 10, MAX_Y + 10);
         xySeries->append(MAX_X + 10, y);
 
-        point.setX(MAX_X);
+        point.setX(MAX_X - 1);
     }
 
     if(y > MAX_Y)
@@ -126,14 +131,19 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
         xySeries->append(MAX_X + 10, MAX_Y + 10);
         xySeries->append(x, MAX_Y + 10);
 
-        point.setY(MAX_Y);
+        point.setY(MAX_Y - 1);
     }
 
-    if(m_usedAreas.contains(qMakePair(point.x(), point.y())))
+    /*if(m_usedAreas.contains(qMakePair(point.x(), point.y())))
+        return false;*/
+
+    if(m_usedAreas[(int)point.x()][(int)point.y()])
         return false;
 
     xySeries->append(point);
-    m_usedAreas.insert(qMakePair(point.x(), point.y()));
+    //m_usedAreas.insert(qMakePair(point.x(), point.y()));
+
+    m_usedAreas[(int)point.x()][(int)point.y()] = true;
 
     return true;
 }

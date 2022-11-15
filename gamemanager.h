@@ -87,18 +87,20 @@ signals:
 private:
     qreal m_speed = 1;
 
-    QSet<QPair<int,int>> m_usedAreas;
+    static const int MAX_X = 200;
+    static const int MAX_Y = 200;
+
+    bool m_usedAreas[MAX_X][MAX_Y];
 
     ModeClass::Mode m_mode = ModeClass::Mode::None;
-
-    const int MAX_X = 200;
-    const int MAX_Y = 200;
 
     int m_firstPoints = 0;
     int m_secondPoints = 0;
 
     WayClass::Way m_firstPlayerWay;
     WayClass::Way m_secondPlayerWay;
+
+    void clearArea();
 };
 
 #endif // GAMEMANAGER_H

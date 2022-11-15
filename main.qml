@@ -85,24 +85,26 @@ Window {
 
         Keys.onPressed: {
 
-            if(event.key === Qt.Key_Return || event.key === Qt.Key_Enter)
+            var key = event.key
+
+            if(key === Qt.Key_Return || key === Qt.Key_Enter)
                 timer.running = !timer.running
 
             if(!timer.running)
                 return
 
-            /*if(event.key === Qt.Key_Escape)
+            /*if(key === Qt.Key_Escape)
                 timer.running = !timer.running*/
 
             var firstWay = gameManager.firstWay
 
-            if(event.key === Qt.Key_W && firstWay !== Way.Down)
+            if(key === Qt.Key_W  && firstWay !== Way.Down)
                 firstWay = Way.Up
-            else if (event.key === Qt.Key_D && firstWay !== Way.Left)
+            else if (key === Qt.Key_D && firstWay !== Way.Left)
                 firstWay = Way.Right
-            else if (event.key === Qt.Key_S && firstWay !== Way.Up)
+            else if (key === Qt.Key_S && firstWay !== Way.Up)
                 firstWay = Way.Down
-            else if (event.key === Qt.Key_A && firstWay !== Way.Right)
+            else if (key === Qt.Key_A && firstWay !== Way.Right)
                 firstWay = Way.Left
 
             gameManager.firstWay = firstWay
@@ -112,13 +114,13 @@ Window {
 
             var secondWay = gameManager.secondWay
 
-            if (event.key === Qt.Key_Up && secondWay !== Way.Down)
+            if (key === Qt.Key_Up && secondWay !== Way.Down)
                 secondWay = Way.Up
-            else if (event.key === Qt.Key_Right && secondWay !== Way.Left)
+            else if (key === Qt.Key_Right && secondWay !== Way.Left)
                 secondWay = Way.Right
-            else if (event.key === Qt.Key_Down && secondWay !== Way.Up)
+            else if (key === Qt.Key_Down && secondWay !== Way.Up)
                 secondWay = Way.Down
-            else if (event.key === Qt.Key_Left && secondWay !== Way.Right)
+            else if (key === Qt.Key_Left && secondWay !== Way.Right)
                 secondWay = Way.Left
 
             gameManager.secondWay = secondWay
@@ -145,7 +147,7 @@ Window {
             } else if(!chartView.first.count)
                 chartView.first.append(0, maxY / 2)
 
-            if(chartView.second.count && !gameManager.updatePoints(chartView.second, gameManager.secondWay)) {
+                if(chartView.second.count && !gameManager.updatePoints(chartView.second, gameManager.secondWay)) {
 
                 timer.running = false
                 resetRound()
