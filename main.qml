@@ -26,6 +26,12 @@ Window {
 
         maxX = gameManager.MAX_X
         maxY = gameManager.MAX_Y
+
+        gameManager.resetArea.connect(chartView.clearAll)
+    }
+
+    Component.onDestruction: {
+        gameManager.resetArea.disconnect(chartView.clearAll)
     }
 
     function resetRound() {
@@ -88,7 +94,7 @@ Window {
             var key = event.key
 
             if(key === Qt.Key_Return || key === Qt.Key_Enter)
-                timer.running = !timer.running
+                gameManager.isRun = !gameManager.isRun
 
             if(!timer.running)
                 return
@@ -130,32 +136,13 @@ Window {
     Timer {
         id: timer
 
-        running: false
+        running: gameManager.isRun
         repeat: true
 
         interval: 20
 
         onTriggered: {
-
-            if(chartView.first.count && !gameManager.updatePoints(chartView.first, gameManager.firstWay)) {
-
-                timer.running = false
-                resetRound()
-
-                ++gameManager.secondPoints
-
-            } else if(!chartView.first.count)
-                chartView.first.append(0, maxY / 2)
-
-                if(chartView.second.count && !gameManager.updatePoints(chartView.second, gameManager.secondWay)) {
-
-                timer.running = false
-                resetRound()
-
-                ++gameManager.firstPoints
-
-            } else if(!chartView.second.count)
-                chartView.second.append(maxX, maxY / 2)
+            gameManager.gameIteration(chartView.first, chartView.second)
         }
     }
 

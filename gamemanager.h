@@ -60,6 +60,8 @@ class GameManager : public QObject
     Q_PROPERTY(int firstWay READ getFirstPlayerWay WRITE setFirstPlayerWay NOTIFY changeWays)
     Q_PROPERTY(int secondWay READ getSecondPlayerWay WRITE setSecondPlayerWay NOTIFY changeWays)
 
+    Q_PROPERTY(bool isRun MEMBER m_isRun NOTIFY updateTimer)
+
 public:
     GameManager();
     virtual ~GameManager();
@@ -76,6 +78,8 @@ public:
     Q_INVOKABLE void resetRound();
     Q_INVOKABLE void resetGame();
 
+    Q_INVOKABLE void gameIteration(QAbstractSeries *first, QAbstractSeries *second);
+
     Q_INVOKABLE bool updatePoints(QAbstractSeries *series, int way);
 
 signals:
@@ -83,6 +87,8 @@ signals:
     void changeSpeed();
     void changeWays();
     void changeScore();
+    void resetArea();
+    void updateTimer();
 
 private:
     qreal m_speed = 1;
@@ -99,6 +105,8 @@ private:
 
     WayClass::Way m_firstPlayerWay;
     WayClass::Way m_secondPlayerWay;
+
+    bool m_isRun = false;
 
     void clearArea();
 };

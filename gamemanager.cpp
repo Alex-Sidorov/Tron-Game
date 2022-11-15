@@ -49,7 +49,6 @@ void GameManager::clearArea()
 
 void GameManager::resetRound()
 {
-    //m_usedAreas.clear();
     clearArea();
 
     m_firstPlayerWay = WayClass::Right;
@@ -61,6 +60,41 @@ void GameManager::resetGame()
     resetRound();
     m_firstPoints = m_secondPoints = 0;
     emit changeScore();
+}
+
+void GameManager::gameIteration(QAbstractSeries *first, QAbstractSeries *second)
+{
+    if(!first || !second)
+        return;
+
+    auto firstXY = static_cast<QXYSeries*>(first);
+    auto secondXY = static_cast<QXYSeries*>(second);
+
+    if(firstXY->count() && !updatePoints(first, m_firstPlayerWay))
+    {
+        m_isRun = false;
+        resetRound();
+        ++m_secondPoints;
+
+        emit changeScore();
+        emit resetArea();
+        emit updateTimer();
+    }
+    else if(!firstXY->count())
+        firstXY->append(0, MAX_Y / 2);
+
+    if(secondXY->count() && !updatePoints(second, m_secondPlayerWay))
+    {
+        m_isRun = false;
+        resetRound();
+        ++m_firstPoints;
+
+        emit changeScore();
+        emit resetArea();
+        emit updateTimer();
+    }
+    else if(!secondXY->count())
+        secondXY->append(MAX_X, MAX_Y / 2);
 }
 
 bool GameManager::updatePoints(QAbstractSeries *series, int way)
@@ -88,11 +122,11 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
         point.setY(y - m_speed);
         break;
 
-   case WayClass::Way::Left:
+    case WayClass::Way::Left:
         point.setX(x - m_speed);
         break;
 
-        default: break;
+    default: break;
     }
 
     if(x > MAX_X)
@@ -117,7 +151,7 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
 
     if(y > MAX_Y)
     {
-        xySeries->append(x , MAX_Y + 10);
+        xySeries->append(x, MAX_Y + 10);
         xySeries->append(MAX_X + 10, MAX_Y + 10);
         xySeries->append(MAX_X + 10, -10);
         xySeries->append(x, -10);
@@ -126,7 +160,7 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
     }
     else if(y < 0)
     {
-        xySeries->append(x , -10);
+        xySeries->append(x, -10);
         xySeries->append(MAX_X + 10, -10);
         xySeries->append(MAX_X + 10, MAX_Y + 10);
         xySeries->append(x, MAX_Y + 10);
@@ -134,14 +168,10 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
         point.setY(MAX_Y - 1);
     }
 
-    /*if(m_usedAreas.contains(qMakePair(point.x(), point.y())))
-        return false;*/
-
     if(m_usedAreas[(int)point.x()][(int)point.y()])
         return false;
 
     xySeries->append(point);
-    //m_usedAreas.insert(qMakePair(point.x(), point.y()));
 
     m_usedAreas[(int)point.x()][(int)point.y()] = true;
 
