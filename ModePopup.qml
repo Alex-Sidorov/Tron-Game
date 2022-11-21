@@ -109,8 +109,6 @@ Popup {
                     close()
                 }
 
-                enabled: false
-
                 background: Rectangle {
                     radius: 10
                     color: "#adb9cc"

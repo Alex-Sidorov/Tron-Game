@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include "gamemanager.h"
+#include "network/client.h"
 
 
 int main(int argc, char *argv[])
@@ -15,9 +16,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<WayClass>("Way", 1, 0, "Way");
 
     GameManager manager;
+    Client client;
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QLatin1String("gameManager"), &manager);
+    engine.rootContext()->setContextProperty(QLatin1String("client"), &client);
 
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));

@@ -28,10 +28,19 @@ Window {
         maxY = gameManager.MAX_Y
 
         gameManager.resetArea.connect(chartView.clearAll)
+
+        client.connectSuccessfully.connect(()=>{console.log("connected")});//TODO
+        client.disconnectedFromHost.connect(()=>{console.log("disconnected")});//TODO
+        client.newPoints.connect(addPoints)//TODO
     }
 
     Component.onDestruction: {
         gameManager.resetArea.disconnect(chartView.clearAll)
+    }
+
+    function addPoints(first, second) {
+        chartView.first.append(first.x, first.y)
+        chartView.second.append(second.x, second.y)
     }
 
     function resetRound() {
@@ -49,6 +58,10 @@ Window {
 
         onSelectMode: {
             gameManager.mode = mode
+
+            if(mode == Mode.Online)
+                client.connectToHost()
+
             resetGame()
         }
 
@@ -69,7 +82,7 @@ Window {
         anchors.topMargin: 60
         color: "black"
         opacity: 0.4
-        visible: !timer.running
+        visible: !timer.running && gameManager.mode === Mode.Friend
 
         z:1
 
@@ -136,7 +149,7 @@ Window {
     Timer {
         id: timer
 
-        running: gameManager.isRun
+        running: gameManager.isRun && gameManager.mode === Mode.Friend
         repeat: true
 
         interval: 20

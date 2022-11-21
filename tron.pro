@@ -6,7 +6,8 @@ QT += quick charts
 
 SOURCES += \
         gamemanager.cpp \
-        main.cpp
+        main.cpp \
+        network/client.cpp
 
 RESOURCES += qml.qrc
 
@@ -22,4 +23,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    gamemanager.h
+    gamemanager.h \
+    network/client.h

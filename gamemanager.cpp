@@ -1,7 +1,7 @@
 #include "gamemanager.h"
 #include <QtCharts/QXYSeries>
 
-GameManager::GameManager()
+GameManager::GameManager() : QObject(nullptr)
 {
 }
 
