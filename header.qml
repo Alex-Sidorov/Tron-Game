@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 
+import Mode 1.0
+
 Rectangle {
     id: header
     width: parent.width
@@ -11,6 +13,8 @@ Rectangle {
         text: qsTr("Speed")
 
         font.pixelSize: 15
+
+        visible: speed.visible
 
         color: "white"
 
@@ -28,6 +32,8 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 150
+
+        visible: gameManager.mode === Mode.Friend || gameManager.mode === Mode.Bot
 
         width: 150
 
@@ -64,7 +70,7 @@ Rectangle {
             modePopup.open()
         }
 
-        enabled: !timer.running
+        enabled: !gameManager.isRun
 
         background: Rectangle {
             radius: 10

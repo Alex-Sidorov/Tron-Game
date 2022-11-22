@@ -105,8 +105,8 @@ Popup {
                 Layout.fillWidth: true
 
                 onClicked: {
-                    selectMode(Mode.Online)
                     close()
+                    selectMode(Mode.Online)
                 }
 
                 background: Rectangle {

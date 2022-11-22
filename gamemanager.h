@@ -62,6 +62,9 @@ class GameManager : public QObject
 
     Q_PROPERTY(bool isRun MEMBER m_isRun NOTIFY updateTimer)
 
+    static const int MAX_X = 200;
+    static const int MAX_Y = 200;
+
 public:
     GameManager();
     virtual ~GameManager();
@@ -91,12 +94,9 @@ signals:
     void updateTimer();
 
 private:
-    qreal m_speed = 1;
-
-    static const int MAX_X = 200;
-    static const int MAX_Y = 200;
-
     bool m_usedAreas[MAX_X][MAX_Y];
+
+    qreal m_speed = 1;
 
     ModeClass::Mode m_mode = ModeClass::Mode::None;
 

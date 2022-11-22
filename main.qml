@@ -29,13 +29,46 @@ Window {
 
         gameManager.resetArea.connect(chartView.clearAll)
 
-        client.connectSuccessfully.connect(()=>{console.log("connected")});//TODO
-        client.disconnectedFromHost.connect(()=>{console.log("disconnected")});//TODO
-        client.newPoints.connect(addPoints)//TODO
+        client.connectSuccessfully.connect(connectedSuccessfully);
+        client.disconnectedFromHost.connect(disconnectedFromHost);
+        client.waitingPlayer.connect(waitingPlayer);
+        client.waitConnect.connect(waitConnection);
+        client.newPoints.connect(addPoints)
+        client.startGame.connect(startGame)
+        client.errorConnectToHost.connect(()=>
+                                          {
+                                              gameManager.isRun = false
+                                              console.log("error connection")
+                                              gameManager.mode = Mode.None
+                                              modePopup.open()
+                                          })
     }
 
     Component.onDestruction: {
         gameManager.resetArea.disconnect(chartView.clearAll)
+    }
+
+    function startGame() {
+        gameManager.isRun = true
+    }
+
+    function disconnectedFromHost() {
+        console.log("disconnected")
+    }
+
+    function waitingPlayer() {
+        messageText.text = qsTr("Waiting player")
+        console.log("waiting player")
+    }
+
+    function waitConnection() {
+        messageText.text = qsTr("Wait connection")
+        console.log("wait connection")
+    }
+
+    function connectedSuccessfully() {
+        messageText.text = qsTr("Connected to server")
+        console.log("connected")
     }
 
     function addPoints(first, second) {
@@ -57,11 +90,18 @@ Window {
         id: modePopup
 
         onSelectMode: {
-            gameManager.mode = mode
 
-            if(mode == Mode.Online)
+            if(gameManager.mode == Mode.Online)
+                client.disconnectFromHost()
+
+            if(mode == Mode.Online) {
                 client.connectToHost()
+            }else if(mode == Mode.Friend || mode == Mode.Bot)
+                messageText.text = qsTr("Tab Enter for start")
+            else
+                messageText.text = qsTr("Select mode")
 
+            gameManager.mode = mode
             resetGame()
         }
 
@@ -82,13 +122,12 @@ Window {
         anchors.topMargin: 60
         color: "black"
         opacity: 0.4
-        visible: !timer.running && gameManager.mode === Mode.Friend
+        visible: !gameManager.isRun
 
         z:1
 
         Text {
             id: messageText
-            text: gameManager.mode != -1 ? qsTr("Tab Enter for start") : qsTr("Select mode")
             color: "white"
             font.pixelSize: 25
             anchors.centerIn: parent
@@ -106,14 +145,42 @@ Window {
 
             var key = event.key
 
+            if(gameManager.mode === Mode.Online)
+                onlineNavigation(key)
+            else
+                offlineNavigation(key)
+
+        }
+
+        function onlineNavigation(key) {
+
+            /*if(key === Qt.Key_Return || key === Qt.Key_Enter)
+                gameManager.isRun = !gameManager.isRun
+
+            if(!gameManager.isRun)
+                return*/
+
+            var way = client.curWay
+
+            if(key === Qt.Key_W  && way !== "down")
+                client.curWay = "up"
+            else if (key === Qt.Key_D && way !== "left")
+                client.curWay = "right"
+            else if (key === Qt.Key_S && way !== "up")
+                client.curWay = "down"
+            else if (key === Qt.Key_A && way !== "right")
+                client.curWay = "left"
+
+            client.sendWay(client.curWay)
+        }
+
+        function offlineNavigation(key) {
+
             if(key === Qt.Key_Return || key === Qt.Key_Enter)
                 gameManager.isRun = !gameManager.isRun
 
-            if(!timer.running)
+            if(!gameManager.isRun)
                 return
-
-            /*if(key === Qt.Key_Escape)
-                timer.running = !timer.running*/
 
             var firstWay = gameManager.firstWay
 
