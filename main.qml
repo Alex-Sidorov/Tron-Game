@@ -145,7 +145,7 @@ Window {
 
             var key = event.key
 
-            if(gameManager.mode === Mode.Online)
+            if(/*gameManager.isRun &&*/ gameManager.mode === Mode.Online)
                 onlineNavigation(key)
             else
                 offlineNavigation(key)

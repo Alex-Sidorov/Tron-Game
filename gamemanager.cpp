@@ -1,5 +1,6 @@
 #include "gamemanager.h"
 #include <QtCharts/QXYSeries>
+#include <QtDebug>
 
 GameManager::GameManager() : QObject(nullptr)
 {
@@ -129,6 +130,9 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
     default: break;
     }
 
+    y = point.y();
+    x = point.x();
+
     if(x > MAX_X)
     {
         xySeries->append(x + 10, y);
@@ -173,6 +177,7 @@ bool GameManager::updatePoints(QAbstractSeries *series, int way)
 
     xySeries->append(point);
 
+    qDebug() << point.x() << point.y();
     m_usedAreas[(int)point.x()][(int)point.y()] = true;
 
     return true;

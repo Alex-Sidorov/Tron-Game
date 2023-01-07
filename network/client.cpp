@@ -46,6 +46,7 @@ void Client::sendWay(const QString &way)
 
     QJsonObject json({{"cmd", "way"},{"way", way}});
     m_client.write(QJsonDocument(json).toJson());
+    m_client.flush();
 }
 
 void Client::readData()
