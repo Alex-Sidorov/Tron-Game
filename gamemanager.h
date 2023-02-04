@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtCharts/QAbstractSeries>
+#include <QtCharts/QXYSeries>
 #include <QSet>
 #include <QPair>
 
@@ -83,8 +84,6 @@ public:
 
     Q_INVOKABLE void gameIteration(QAbstractSeries *first, QAbstractSeries *second);
 
-    Q_INVOKABLE bool updatePoints(QAbstractSeries *series, int way);
-
 signals:
     void changeMode();
     void changeSpeed();
@@ -109,6 +108,10 @@ private:
     bool m_isRun = false;
 
     void clearArea();
+    bool checkPoints(const int x, const int y) const;
+    QPointF getNewPoints(QAbstractSeries *series, int way);
+    void addPoint(const int x, const int y, QXYSeries* player);
+    void finishRound(int& scoreWinner);
 };
 
 #endif // GAMEMANAGER_H
