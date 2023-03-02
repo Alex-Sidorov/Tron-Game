@@ -216,7 +216,7 @@ Window {
     Timer {
         id: timer
 
-        running: gameManager.isRun && gameManager.mode === Mode.Friend
+        running: gameManager.isRun
         repeat: true
 
         interval: 20

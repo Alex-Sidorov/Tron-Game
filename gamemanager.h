@@ -62,6 +62,7 @@ class GameManager : public QObject
     Q_PROPERTY(int secondWay READ getSecondPlayerWay WRITE setSecondPlayerWay NOTIFY changeWays)
 
     Q_PROPERTY(bool isRun MEMBER m_isRun NOTIFY updateTimer)
+    Q_PROPERTY(bool isBotHard MEMBER m_isBotHard NOTIFY changeBotComplexity)
 
     static const int MAX_X = 200;
     static const int MAX_Y = 200;
@@ -91,6 +92,7 @@ signals:
     void changeScore();
     void resetArea();
     void updateTimer();
+    void changeBotComplexity();
 
 private:
     bool m_usedAreas[MAX_X][MAX_Y];
@@ -107,11 +109,19 @@ private:
 
     bool m_isRun = false;
 
+    bool m_isBotHard = false;
+
     void clearArea();
+
     bool checkPoints(const int x, const int y) const;
     QPointF getNewPoints(QAbstractSeries *series, int way);
     void addPoint(const int x, const int y, QXYSeries* player);
-    void finishRound(int& scoreWinner);
+
+    void finishRound(int& scoreWinner);    
+
+    WayClass::Way getBotStep(const QPoint& start) const;
+
+    int countDistanceToWall(const QPoint& start, const WayClass::Way direction) const;
 };
 
 #endif // GAMEMANAGER_H

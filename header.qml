@@ -101,4 +101,57 @@ Rectangle {
 
         anchors.centerIn: parent
     }
+
+    Text {
+        text: qsTr("Complexity bot")
+
+        visible: complexity.visible
+
+        font.pixelSize: 15
+
+        color: "white"
+
+        anchors.horizontalCenter: complexity.horizontalCenter
+        anchors.bottom: complexity.top
+        anchors.bottomMargin: -5
+        //anchors.left: complexity.left
+    }
+
+    Slider {
+        id: complexity
+
+        visible: gameManager.mode === Mode.Bot
+
+        enabled: !timer.running
+
+        anchors.verticalCenterOffset: 5
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 150
+
+        width: 150
+
+        value: 0
+
+        from: 0
+        to: 1
+
+        stepSize: 1
+
+        snapMode: "SnapAlways"
+
+        handle: Rectangle {
+            x: complexity.leftPadding + complexity.visualPosition * (complexity.availableWidth - width)
+            y: complexity.topPadding + complexity.availableHeight / 2 - height / 2
+            implicitWidth: 20
+            implicitHeight: 20
+            radius: 13
+            color: "#f0f0f0"
+        }
+
+        onValueChanged: {
+            gameManager.isBotHard = value
+            keyItem.focus = true
+        }
+    }
 }

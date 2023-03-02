@@ -75,8 +75,6 @@ Popup {
             Button {
                 Layout.fillWidth: true
 
-                enabled: false
-
                 onClicked: {
                     selectMode(Mode.Bot)
                     close()
